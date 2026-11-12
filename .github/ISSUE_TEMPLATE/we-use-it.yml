@@ -1,0 +1,44 @@
+name: We use it
+description: Tell us your app uses No File Left Behind. Optional, and we'd love to know. We add it to the list for you.
+title: "We use it: <app name>"
+labels: ["adopter"]
+body:
+  - type: input
+    id: name
+    attributes:
+      label: App name
+    validations:
+      required: true
+  - type: input
+    id: url
+    attributes:
+      label: Link
+      description: Its home page or repository.
+    validations:
+      required: true
+  - type: input
+    id: app_version
+    attributes:
+      label: Which version of your app first had it?
+      placeholder: "3.2"
+  - type: input
+    id: spec_version
+    attributes:
+      label: Which version of the specification did you check against?
+      placeholder: "0.4.0"
+    validations:
+      required: true
+  - type: dropdown
+    id: status
+    attributes:
+      label: How far along?
+      options:
+        - It meets every MUST in sections 1 to 6
+        - Partly (say which rules are missing, below)
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Anything to add
+      description: Rules not met yet, what you built it with, what was awkward, what the specification got wrong. A screenshot is welcome.

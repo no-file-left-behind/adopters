@@ -1,0 +1,25 @@
+name: Build the list
+on:
+  push:
+    branches: [main]
+    paths: ["apps/**", "tools/**", "README.md"]
+permissions:
+  contents: write
+concurrency: build-the-list
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node tools/adopters.mjs --write
+      - name: Commit the rebuilt list
+        run: |
+          if git diff --quiet; then echo "nothing changed"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -qam "Rebuild the list"
+          git pull -q --rebase
+          git push -q

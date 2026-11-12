@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: A question or a problem with the pattern itself
+    url: https://github.com/no-file-left-behind/no-file-left-behind.github.io/issues
+    about: The specification, the scenarios and the implementations live in the main repository.

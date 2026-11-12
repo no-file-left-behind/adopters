@@ -1,0 +1,26 @@
+name: Check
+on:
+  pull_request:
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node tools/adopters.mjs
+      # A pull request from outside adds or changes one file in apps/ and nothing else, so it can
+      # never conflict with another one.
+      - name: One file, in apps/
+        if: github.event.pull_request.head.repo.full_name != github.repository
+        run: |
+          files=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD")
+          echo "$files"
+          count=$(printf '%s\n' "$files" | grep -c .)
+          if [ "$count" -ne 1 ] || ! printf '%s\n' "$files" | grep -Eq '^apps/[a-z0-9]+(-[a-z0-9]+)*\.json$'; then
+            echo "A pull request here adds or changes exactly one file, apps/<your-app>.json. See README.md."
+            exit 1
+          fi
