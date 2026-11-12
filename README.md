@@ -62,7 +62,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: no-file-left-behind/adopters@v1
+      - uses: no-file-left-behind/adopters@v1.1
 ```
 
 It checks the file and comments on the pull request: "Merging this pull request declares that
@@ -87,8 +87,8 @@ Three things to know about the workflow:
   token, so the comment can't be posted there. The same text still appears in the job's summary,
   and the check still passes or fails on the file.
 - **Pin it if your project pins its actions.** Use the commit instead of the tag:
-  `no-file-left-behind/adopters@e185fc9b…  # v1` (the full hash is on the
-  [v1 tag](https://github.com/no-file-left-behind/adopters/releases/tag/v1)). The action is one
+  `no-file-left-behind/adopters@46148a1d…  # v1.1` (the full hash is on the
+  [v1.1 tag](https://github.com/no-file-left-behind/adopters/releases/tag/v1.1)). The action is one
   small script, [`tools/declare.mjs`](tools/declare.mjs), with no dependencies; read it first.
 
 ### 3. Open a pull request here
