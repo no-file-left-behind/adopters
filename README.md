@@ -76,6 +76,16 @@ request updating your entry opens here within the hour. You do nothing.
 
 The workflow is optional. The list follows the file with or without it.
 
+Two things to know about the workflow:
+
+- **Pull requests from forks get no comment.** GitHub gives a fork's pull request a read-only
+  token, so the comment can't be posted there. The same text still appears in the job's summary,
+  and the check still passes or fails on the file.
+- **Pin it if your project pins its actions.** Use the commit instead of the tag:
+  `no-file-left-behind/adopters@e185fc9b…  # v1` (the full hash is on the
+  [v1 tag](https://github.com/no-file-left-behind/adopters/releases/tag/v1)). The action is one
+  small script, [`tools/declare.mjs`](tools/declare.mjs), with no dependencies; read it first.
+
 ### 3. Open a pull request here
 
 Add **one new file**, `apps/<your-app>.json`, and nothing else.
