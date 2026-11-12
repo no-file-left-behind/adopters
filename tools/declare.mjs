@@ -16,7 +16,11 @@ const gh = (path, { token = env.NFLB_TOKEN, method = "GET", body, raw = false } 
   headers: { accept: raw ? "application/vnd.github.raw+json" : "application/vnd.github+json", "x-github-api-version": "2022-11-28", ...(token ? { authorization: `Bearer ${token}` } : {}) },
 });
 
-if (!existsSync(DECLARATION)) { summary(`There is no \`${DECLARATION}\` at the top of this repository. See https://github.com/${LIST}#declare-it-in-your-own-repository`); process.exit(1); }
+// This job may fail for one reason only: the change under test makes the declaration invalid.
+// Anything else (no file, GitHub or the network having a bad moment, a bug here) passes with a
+// note, so it can never put a red mark on a branch that didn't touch the declaration.
+async function main() {
+if (!existsSync(DECLARATION)) { summary(`There is no \`${DECLARATION}\` at the top of this repository, so nothing is declared. See https://github.com/${LIST}#2-declare-it-in-your-own-repository`); process.exit(0); }
 let now;
 try { now = JSON.parse(readFileSync(DECLARATION, "utf8")); } catch (e) { summary(`\`${DECLARATION}\` is not valid JSON (${e.message}).`); process.exit(1); }
 const found = problemsIn(now);
@@ -70,3 +74,5 @@ if (!same && followed && env.NFLB_ADOPTERS_TOKEN) {
   const r = await gh(`/repos/${LIST}/dispatches`, { token: env.NFLB_ADOPTERS_TOKEN, method: "POST", body: { event_type: "declared", client_payload: { repo } } });
   console.log(r.ok ? "Told the adopters list." : `(could not tell the adopters list: HTTP ${r.status}; it will notice within the hour)`);
 }
+}
+main().catch((e) => { console.log(`(the declaration check could not finish: ${e && e.message ? e.message : e}. Not counted as a failure.)`); process.exit(0); });

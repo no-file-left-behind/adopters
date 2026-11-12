@@ -76,7 +76,12 @@ request updating your entry opens here within the hour. You do nothing.
 
 The workflow is optional. The list follows the file with or without it.
 
-Two things to know about the workflow:
+Three things to know about the workflow:
+
+- **It runs only when `.nflb.json` changes, and fails only if that change makes the file
+  invalid.** The `paths` lines mean an ordinary pull request never starts it, so it can't put a
+  failed check, or a failure email, on anyone else's branch. If the file is missing, or GitHub
+  or the network has a bad moment, it passes with a note.
 
 - **Pull requests from forks get no comment.** GitHub gives a fork's pull request a read-only
   token, so the comment can't be posted there. The same text still appears in the job's summary,
