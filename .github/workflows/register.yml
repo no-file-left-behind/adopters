@@ -1,0 +1,27 @@
+name: Add an app from its declaration
+on:
+  issues:
+    types: [opened, edited, reopened]
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+jobs:
+  register:
+    if: contains(github.event.issue.labels.*.name, 'declaration') && github.event.issue.state == 'open'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # The issue's text is passed as data, never as part of a command.
+      - run: |
+          node tools/register.mjs > reply.md || true
+          gh issue comment "$NFLB_ISSUE" --body-file reply.md
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NFLB_ISSUE: ${{ github.event.issue.number }}
+          NFLB_ISSUE_BODY: ${{ github.event.issue.body }}

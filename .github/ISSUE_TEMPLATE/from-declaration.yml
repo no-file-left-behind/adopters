@@ -1,0 +1,13 @@
+name: Add my app from its declaration
+description: Your repository has a .nflb.json. Give us the repository and the list adds your app, then follows that file by itself.
+title: "Add <app name>"
+labels: ["declaration"]
+body:
+  - type: input
+    id: repository
+    attributes:
+      label: Repository
+      description: The public GitHub repository that holds .nflb.json on its default branch, as owner/name.
+      placeholder: owner/name
+    validations:
+      required: true

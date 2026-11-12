@@ -15,7 +15,8 @@
         "6.3",
         "6.5"
       ],
-      "notes": "The app the pattern came from. The rules it doesn't meet yet are being worked on."
+      "notes": "The app the pattern came from. The rules it doesn't meet yet are being worked on.",
+      "source": "tangency-labs/solidcraft"
     }
   ]
 }

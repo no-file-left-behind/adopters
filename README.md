@@ -18,10 +18,67 @@ Each app's makers say this themselves; nobody certifies it.
 
 ## Add your app
 
-**The quick way:** [fill in the form](https://github.com/no-file-left-behind/adopters/issues/new?template=we-use-it.yml).
+There are three ways. Use whichever suits you.
+
+### 1. Fill in a form
+
+[Fill in the form](https://github.com/no-file-left-behind/adopters/issues/new?template=we-use-it.yml).
 We add your app for you.
 
-**With a pull request:** add **one new file**, `apps/<your-app>.json`, and nothing else.
+### 2. Declare it in your own repository
+
+Best if your app is on GitHub. Your repository says where it stands, and this list follows it.
+
+Put a file named `.nflb.json` at the top of your repository:
+
+```json
+{
+  "name": "My App",
+  "url": "https://example.org/my-app",
+  "app_version": "3.2",
+  "spec_version": "0.4.0",
+  "status": "conforms"
+}
+```
+
+Add or change that file **in the same pull request as the work itself**. Merging that pull
+request is then the declaration: the code and the statement land together.
+
+To have the pull request say so, add this workflow as `.github/workflows/nflb.yml`:
+
+```yaml
+name: No File Left Behind
+on:
+  pull_request:
+    paths: [".nflb.json"]
+  push:
+    branches: [main]
+    paths: [".nflb.json"]
+permissions:
+  contents: read
+  pull-requests: write
+jobs:
+  declaration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: no-file-left-behind/adopters@v1
+```
+
+It checks the file and comments on the pull request: "Merging this pull request declares that
+My App conforms to No File Left Behind 0.4.0", with what it said before.
+
+After the first merge, tell this list once that your repository has a declaration: the comment
+gives you a link to [a one-field form](https://github.com/no-file-left-behind/adopters/issues/new?template=from-declaration.yml).
+A pull request adding your app opens here by itself. From then on, whenever `.nflb.json` changes
+on your default branch (a new specification version, `"partly"` becoming `"conforms"`), a pull
+request updating your entry opens here within the hour. You do nothing.
+
+The workflow is optional. The list follows the file with or without it.
+
+### 3. Open a pull request here
+
+Add **one new file**, `apps/<your-app>.json`, and nothing else.
 
 ```json
 {
@@ -34,6 +91,10 @@ We add your app for you.
 }
 ```
 
+## The fields
+
+The same in `.nflb.json` and in `apps/<your-app>.json`.
+
 | Field | Meaning |
 |---|---|
 | `name` | Your app's name. |
@@ -43,8 +104,9 @@ We add your app for you.
 | `status` | `"conforms"` if you meet every MUST in sections 1 to 6; `"partly"` if not yet. |
 | `missing` | With `"partly"`: the rules you don't meet yet, e.g. `["2.6", "6.3"]`. |
 | `notes` | One line. Optional. |
+| `source` | Only in `apps/`: the repository whose `.nflb.json` this entry follows, as `owner/name`. |
 
-### The rules for a pull request
+## The rules for a pull request here
 
 These keep every pull request mergeable as it stands, with no conflicts and no rebasing:
 
@@ -56,9 +118,6 @@ These keep every pull request mergeable as it stands, with no conflicts and no r
 
 A check runs on your pull request and tells you if the file needs fixing. To check it yourself:
 `node tools/adopters.mjs`.
-
-To update your entry later (a new specification version, or `"partly"` becoming `"conforms"`),
-change your own file the same way.
 
 ## Licence
 

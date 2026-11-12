@@ -1,0 +1,30 @@
+name: Follow the declarations
+# Apps that keep a .nflb.json in their own repository: when it changes, open a pull request here.
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+    inputs:
+      repo:
+        description: Only this repository (owner/name). Empty for all.
+        required: false
+  repository_dispatch:
+    types: [declared]
+permissions:
+  contents: write
+  pull-requests: write
+concurrency: follow-the-declarations
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: if [ -n "$ONLY" ]; then node tools/sync.mjs "$ONLY"; else node tools/sync.mjs; fi
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ONLY: ${{ inputs.repo || github.event.client_payload.repo }}
