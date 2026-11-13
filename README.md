@@ -44,7 +44,7 @@ Put a file named `.nflb.json` at the top of your repository:
 Add or change that file **in the same pull request as the work itself**. Merging that pull
 request is then the declaration: the code and the statement land together.
 
-To have the pull request say so, add this workflow as `.github/workflows/nflb.yml`:
+To have the file checked whenever it changes, add this workflow as `.github/workflows/nflb.yml`:
 
 ```yaml
 name: No File Left Behind
@@ -56,7 +56,6 @@ on:
     paths: [".nflb.json"]
 permissions:
   contents: read
-  pull-requests: write
 jobs:
   declaration:
     runs-on: ubuntu-latest
@@ -65,16 +64,22 @@ jobs:
       - uses: no-file-left-behind/adopters@v1.1
 ```
 
-It checks the file and comments on the pull request: "Merging this pull request declares that
-My App conforms to No File Left Behind 0.4.0", with what it said before.
+It checks the file, and the job's summary says what merging declares: "Merging this pull request
+declares that My App conforms to No File Left Behind 0.4.0", with what it said before. It only
+reads; it needs no permission to write anything.
+
+To have it say that as a comment on the pull request too, add `pull-requests: write` under
+`permissions`. That is the only thing the extra permission is used for.
 
 After the first merge, tell this list once that your repository has a declaration: the comment
-gives you a link to [a one-field form](https://github.com/no-file-left-behind/adopters/issues/new?template=from-declaration.yml).
+and the summary give you a link to [a one-field form](https://github.com/no-file-left-behind/adopters/issues/new?template=from-declaration.yml).
 A pull request adding your app opens here by itself. From then on, whenever `.nflb.json` changes
 on your default branch (a new specification version, `"partly"` becoming `"conforms"`), a pull
 request updating your entry opens here within the hour. You do nothing.
 
-The workflow is optional. The list follows the file with or without it.
+The workflow is optional. The list follows the file with or without it. Propose it in a pull
+request of its own, apart from the work: many projects review a new action separately, and some
+don't take outside actions at all.
 
 Three things to know about the workflow:
 
@@ -83,8 +88,8 @@ Three things to know about the workflow:
   failed check, or a failure email, on anyone else's branch. If the file is missing, or GitHub
   or the network has a bad moment, it passes with a note.
 
-- **Pull requests from forks get no comment.** GitHub gives a fork's pull request a read-only
-  token, so the comment can't be posted there. The same text still appears in the job's summary,
+- **Pull requests from forks get no comment,** even with the write permission. GitHub gives a
+  fork's pull request a read-only token, so the comment can't be posted there. The same text still appears in the job's summary,
   and the check still passes or fails on the file.
 - **Pin it if your project pins its actions.** Use the commit instead of the tag:
   `no-file-left-behind/adopters@46148a1d…  # v1.1` (the full hash is on the
